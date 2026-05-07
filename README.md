@@ -1,3 +1,13 @@
+---
+title: Disease Diagnosis
+emoji: 🏥
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_file: interface.py
+pinned: false
+---
+
 # Expert System for Disease Diagnosis using Prolog and Python
 
 **Course:** Knowledge Representation and Reasoning (A1406)  
