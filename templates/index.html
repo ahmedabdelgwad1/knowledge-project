@@ -300,6 +300,11 @@
         const pageTitle = document.getElementById("pageTitle");
         const pageSubtitle = document.getElementById("pageSubtitle");
 
+        const termsDict = {
+            ar: {'flu': 'إنفلونزا', 'cold': 'نزلة برد', 'covid19': 'كوفيد-19', 'malaria': 'ملاريا', 'diabetes': 'مرض السكري', 'hypertension': 'ارتفاع ضغط الدم', 'pneumonia': 'التهاب رئوي', 'dengue': 'حمى الضنك', 'tuberculosis': 'السل', 'anemia': 'فقر الدم', 'fever': 'حمى', 'cough': 'سعال', 'sore_throat': 'التهاب الحلق', 'body_ache': 'آلام بالجسم', 'fatigue': 'إرهاق', 'sneezing': 'عطس', 'runny_nose': 'سيلان الأنف', 'mild_cough': 'سعال خفيف', 'congestion': 'احتقان', 'dry_cough': 'سعال جاف', 'shortness_of_breath': 'ضيق في التنفس', 'loss_of_taste': 'فقدان حاسة التذوق', 'chills': 'قشعريرة', 'sweating': 'تعرق', 'headache': 'صداع', 'nausea': 'غثيان', 'frequent_urination': 'كثرة التبول', 'increased_thirst': 'زيادة العطش', 'increased_hunger': 'زيادة الجوع', 'blurred_vision': 'ضبابية الرؤية', 'dizziness': 'دوخة', 'chest_pain': 'ألم في الصدر', 'nosebleeds': 'نزيف الأنف', 'high_fever': 'حمى شديدة', 'severe_headache': 'صداع شديد', 'joint_pain': 'ألم المفاصل', 'muscle_pain': 'ألم العضلات', 'rash': 'طفح جلدي', 'persistent_cough': 'سعال مستمر', 'weight_loss': 'فقدان الوزن', 'night_sweats': 'تعرق ليلي', 'weakness': 'ضعف', 'pale_skin': 'شحوب الجلد', 'rest': 'راحة', 'hydration': 'شرب سوائل (ترطيب)', 'warm_fluids': 'سوائل دافئة', 'decongestant': 'مزيل للاحتقان', 'isolation': 'عزل صحي', 'supportive_care': 'رعاية داعمة', 'antimalarial_medication': 'أدوية مضادة للملاريا', 'blood_sugar_monitoring': 'مراقبة نسبة السكر', 'balanced_diet': 'نظام غذائي متوازن', 'low_sodium_diet': 'نظام غذائي قليل الصوديوم', 'regular_exercise': 'ممارسة الرياضة', 'antibiotics': 'مضادات حيوية', 'fluid_replacement': 'تعويض السوائل', 'pain_relief': 'مسكنات الألم', 'long_term_followup': 'متابعة طبية', 'iron_supplements': 'مكملات الحديد', 'healthy_diet': 'نظام غذائي صحي', 'treatments': 'العلاجات الموصى بها:'},
+            en: {'treatments': 'Recommended Treatments:'}
+        };
+
         const translations = {
             en: {
                 appTitle: "Expert Diagnosis",
@@ -425,6 +430,12 @@
          * @returns {string}
          */
         function formatLabel(value) {
+            if (termsDict[currentLang] && termsDict[currentLang][value]) {
+                return termsDict[currentLang][value];
+            }
+            if (currentLang === "ar" && termsDict["ar"][value]) {
+                return termsDict["ar"][value];
+            }
             return value.replace(/_/g, " ");
         }
 
@@ -489,6 +500,10 @@
                 <h3>${formatLabel(match.disease)}</h3>
                 <div class="badge success">${t("fullMatch")}</div>
                 <div class="badge ${match.severity}">${t(match.severity)}</div>
+            `;
+        }</h3>
+                <div class="badge success">${t("fullMatch")}</div>
+                <div class="badge ${match.severity}">${t(match.severity)}</div>
                 <p>${t("matched")} ${match.matchCount} ${t("symptoms")} / ${match.totalSymptoms}</p>
             `;
         }
@@ -501,6 +516,9 @@
         function buildPartialHeader(match) {
             return `
                 <h3>${formatLabel(match.disease)}</h3>
+                <div class="badge warning">${t("partialMatch")}</div>
+            `;
+        }</h3>
                 <div class="badge warning">${t("partialMatch")}</div>
                 <p>${t("matched")} ${match.matchCount} ${t("symptoms")} / ${match.totalSymptoms}</p>
             `;
@@ -557,12 +575,28 @@
          * @returns {HTMLElement}
          */
         function renderTreatments(treatments) {
+            const container = document.createElement("div");
+            container.style.marginTop = "15px";
+            const header = document.createElement("strong");
+            header.style.fontSize = "13px";
+            header.style.color = "var(--color-primary)";
+            header.textContent = termsDict[currentLang]["treatments"] || formatLabel("treatments");
+            container.appendChild(header);
+            
             const list = document.createElement("ul");
+            list.style.marginTop = "8px";
+            list.style.paddingLeft = currentLang === "ar" ? "0" : "20px";
+            list.style.paddingRight = currentLang === "ar" ? "20px" : "0";
+            
             treatments.forEach((treatment) => {
                 const item = document.createElement("li");
+                item.style.fontSize = "14px";
                 item.textContent = formatLabel(treatment);
                 list.appendChild(item);
             });
+            container.appendChild(list);
+            return container;
+        });
             return list;
         }
 
