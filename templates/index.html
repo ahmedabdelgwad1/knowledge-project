@@ -347,6 +347,75 @@
         let currentLang = "en";
         let lastResults = null;
 
+        const arabicLabels = {
+            diseases: {
+                flu: "الإنفلونزا",
+                cold: "نزلة برد",
+                covid19: "كوفيد-19",
+                malaria: "ملاريا",
+                diabetes: "السكري",
+                hypertension: "ارتفاع ضغط الدم",
+                pneumonia: "التهاب رئوي",
+                dengue: "حمى الضنك",
+                tuberculosis: "السل",
+                anemia: "فقر الدم",
+            },
+            symptoms: {
+                fever: "حمى",
+                cough: "سعال",
+                sore_throat: "التهاب الحلق",
+                body_ache: "آلام الجسم",
+                fatigue: "إرهاق",
+                sneezing: "عطاس",
+                runny_nose: "سيلان الأنف",
+                mild_cough: "سعال خفيف",
+                congestion: "احتقان",
+                dry_cough: "سعال جاف",
+                shortness_of_breath: "ضيق التنفس",
+                loss_of_taste: "فقدان التذوق",
+                chills: "قشعريرة",
+                sweating: "تعرق",
+                headache: "صداع",
+                nausea: "غثيان",
+                frequent_urination: "كثرة التبول",
+                increased_thirst: "زيادة العطش",
+                increased_hunger: "زيادة الجوع",
+                blurred_vision: "تشوش الرؤية",
+                dizziness: "دوخة",
+                chest_pain: "ألم الصدر",
+                nosebleeds: "نزيف الأنف",
+                high_fever: "حمى شديدة",
+                severe_headache: "صداع شديد",
+                joint_pain: "ألم المفاصل",
+                muscle_pain: "ألم العضلات",
+                rash: "طفح جلدي",
+                persistent_cough: "سعال مستمر",
+                weight_loss: "فقدان الوزن",
+                night_sweats: "تعرق ليلي",
+                weakness: "ضعف",
+                pale_skin: "شحوب الجلد",
+            },
+            treatments: {
+                rest: "راحة",
+                hydration: "شرب السوائل",
+                warm_fluids: "سوائل دافئة",
+                decongestant: "مزيل احتقان",
+                isolation: "عزل",
+                supportive_care: "رعاية داعمة",
+                antimalarial_medication: "أدوية مضادة للملاريا",
+                blood_sugar_monitoring: "مراقبة سكر الدم",
+                balanced_diet: "نظام غذائي متوازن",
+                low_sodium_diet: "نظام غذائي قليل الملح",
+                regular_exercise: "تمارين منتظمة",
+                antibiotics: "مضادات حيوية",
+                fluid_replacement: "تعويض السوائل",
+                pain_relief: "مسكنات ألم",
+                long_term_followup: "متابعة طويلة الأمد",
+                iron_supplements: "مكملات الحديد",
+                healthy_diet: "نظام غذائي صحي",
+            },
+        };
+
         /**
          * Get translation string for a key.
          * @param {string} key
@@ -423,7 +492,13 @@
          * @param {string} value
          * @returns {string}
          */
-        function formatLabel(value) {
+        function formatLabel(value, category) {
+            if (currentLang === "ar" && category) {
+                const table = arabicLabels[category];
+                if (table && table[value]) {
+                    return table[value];
+                }
+            }
             return value.replace(/_/g, " ");
         }
 
@@ -455,7 +530,7 @@
                 checkbox.addEventListener("change", updateSelectedCount);
 
                 const text = document.createElement("span");
-                text.textContent = formatLabel(symptom);
+                text.textContent = formatLabel(symptom, "symptoms");
 
                 wrapper.appendChild(checkbox);
                 wrapper.appendChild(text);
@@ -485,7 +560,7 @@
          */
         function buildFullHeader(match) {
             return `
-                <h3>${formatLabel(match.disease)}</h3>
+                <h3>${formatLabel(match.disease, "diseases")}</h3>
                 <div class="badge success">${t("fullMatch")}</div>
                 <div class="badge ${match.severity}">${t(match.severity)}</div>
                 <p>${t("matched")} ${match.matchCount} ${t("symptoms")} / ${match.totalSymptoms}</p>
@@ -499,7 +574,7 @@
          */
         function buildPartialHeader(match) {
             return `
-                <h3>${formatLabel(match.disease)}</h3>
+                <h3>${formatLabel(match.disease, "diseases")}</h3>
                 <div class="badge warning">${t("partialMatch")}</div>
                 <p>${t("matched")} ${match.matchCount} ${t("symptoms")} / ${match.totalSymptoms}</p>
             `;
@@ -516,7 +591,7 @@
             symptoms.forEach((symptom) => {
                 const chip = document.createElement("span");
                 chip.className = "chip";
-                chip.textContent = formatLabel(symptom);
+                chip.textContent = formatLabel(symptom, "symptoms");
                 chips.appendChild(chip);
             });
             return chips;
@@ -559,7 +634,7 @@
             const list = document.createElement("ul");
             treatments.forEach((treatment) => {
                 const item = document.createElement("li");
-                item.textContent = formatLabel(treatment);
+                item.textContent = formatLabel(treatment, "treatments");
                 list.appendChild(item);
             });
             return list;
