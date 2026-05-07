@@ -15,22 +15,29 @@ pinned: false
 **Instructors:** Dr. Nihal Mabrouk / Eng. Renad Khalil  
 **Semester:** Spring 2025-2026  
 
+## 🌐 Live Demo
+**Try the deployed project here:** 
+👉 **[Disease Diagnosis System (Live on Hugging Face)](https://ahmed3182004-disease-diagnosis-prolog.hf.space)** 👈
+
 ## Project Overview
 This project is an Expert System capable of diagnosing common diseases based on user-input symptoms. It uses Prolog for knowledge representation and rule-based reasoning, integrated with a Python (Flask) backend to provide a seamless web interface (HTML/CSS/JS) for the users.
 
 ## Features
 - **Prolog Knowledge Base**: Contains facts and rules for 10 common diseases and their symptoms.
 - **Python Backend**: Uses `pyswip` to bridge the gap between Python and Prolog.
-- **Dynamic User Interface**: Clean HTML/JS frontend allowing users to select symptoms and receive instant diagnoses.
+- **Dynamic User Interface**: Clean HTML/JS frontend allowing users to select symptoms and receive instant diagnoses. Responsive on Mobile and Desktop.
 - **Bilingual UI**: Supports English and Arabic interface via a toggle button.
 - **Smart Matching**: Displays full matches (matched over 3 symptoms) and partial matches with percentage progress.
+- **Dockerized Deployment**: Fully configured with Docker for easy cloud deployment.
 
-## Prerequisites / Requirements
-- macOS / Windows / Linux
-- Python 3.10+
-- SWI-Prolog
+## Project Structure
+- `expert_system.pl`: Prolog Knowledge Base (facts, rules, symptoms, and treatments).
+- `interface.py`: Python Flask server and pyswip integration logic.
+- `templates/index.html`: The frontend User Interface.
+- `Dockerfile`: Configuration to build the environment (Python + SWI-Prolog) for cloud deployment.
+- `requirements.txt`: Python package dependencies.
 
-## Setup Instructions
+## Local Setup Instructions (For Developers)
 
 1) **Install SWI-Prolog:**
    * **macOS:** `brew install swi-prolog`
@@ -44,27 +51,15 @@ This project is an Expert System capable of diagnosing common diseases based on 
 
 3) **Install Python dependencies:**
    ```bash
-   python -m pip install flask pyswip
+   python -m pip install flask pyswip gunicorn
    ```
 
-## Run the Project
-
-Start the Flask server:
-```bash
-python interface.py
-```
-*Note: The app runs on port 5001 by default to avoid conflicts on macOS.*
-
-Open in your browser:
-```
-http://127.0.0.1:5001
-```
-
-## Project Structure
-- `expert_system.pl`: Prolog Knowledge Base (facts, rules, symptoms, and treatments).
-- `interface.py`: Python Flask server and pyswip integration logic.
-- `templates/index.html`: The frontend User Interface.
+4) **Run the Project:**
+   ```bash
+   python interface.py
+   ```
+   Open `http://127.0.0.1:5001` in your browser.
 
 ## Team
-- Student 1: [Name]
-- Student 2: [Name]
+- Student 1: Ahmed Abdelgwad
+- Student 2: [Add Partner Name Here if any]
