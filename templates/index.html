@@ -637,15 +637,18 @@
          * @returns {HTMLElement}
          */
         function renderTreatments(treatments) {
+            const wrapper = document.createElement("div");
+            const title = document.createElement("div");
+            title.textContent = currentLang === "ar" ? "العلاج" : "Treatment";
             const list = document.createElement("ul");
             treatments.forEach((treatment) => {
                 const item = document.createElement("li");
-                const label = formatLabel(treatment, "treatments");
-                item.textContent =
-                    currentLang === "ar" ? `العلاج: ${label}` : label;
+                item.textContent = formatLabel(treatment, "treatments");
                 list.appendChild(item);
             });
-            return list;
+            wrapper.appendChild(title);
+            wrapper.appendChild(list);
+            return wrapper;
         }
 
         /**
