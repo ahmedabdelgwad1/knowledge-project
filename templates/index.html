@@ -346,6 +346,7 @@
 
         let currentLang = "en";
         let lastResults = null;
+        let allSymptoms = [];
 
         const arabicLabels = {
             diseases: {
@@ -450,6 +451,10 @@
             diagnoseBtn.textContent = t("diagnose");
             resetBtn.textContent = t("reset");
             langToggle.textContent = currentLang === "en" ? "AR" : "EN";
+            if (allSymptoms.length) {
+                const selected = new Set(getSelectedSymptoms());
+                renderSymptoms(allSymptoms, selected);
+            }
             updateSelectedCount();
             document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
             document.body.classList.toggle("rtl", currentLang === "ar");
@@ -516,7 +521,7 @@
          * @param {string[]} symptoms
          * @returns {void}
          */
-        function renderSymptoms(symptoms) {
+        function renderSymptoms(symptoms, selected = new Set()) {
             symptomList.innerHTML = "";
             const fragment = document.createDocumentFragment();
             symptoms.forEach((symptom) => {
@@ -527,6 +532,7 @@
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.value = symptom;
+                checkbox.checked = selected.has(symptom);
                 checkbox.addEventListener("change", updateSelectedCount);
 
                 const text = document.createElement("span");
@@ -563,7 +569,7 @@
                 <h3>${formatLabel(match.disease, "diseases")}</h3>
                 <div class="badge success">${t("fullMatch")}</div>
                 <div class="badge ${match.severity}">${t(match.severity)}</div>
-                <p>${t("matched")} ${match.matchCount} ${t("symptoms")} / ${match.totalSymptoms}</p>
+                <p>${t("matched")} ${match.matchCount} ${t("symptoms")}</p>
             `;
         }
 
@@ -576,7 +582,7 @@
             return `
                 <h3>${formatLabel(match.disease, "diseases")}</h3>
                 <div class="badge warning">${t("partialMatch")}</div>
-                <p>${t("matched")} ${match.matchCount} ${t("symptoms")} / ${match.totalSymptoms}</p>
+                <p>${t("matched")} ${match.matchCount} ${t("symptoms")}</p>
             `;
         }
 
@@ -688,7 +694,8 @@
             const items = symptomList.querySelectorAll(".symptom-item");
             items.forEach((item) => {
                 const name = item.dataset.symptom || "";
-                const visible = name.includes(query.toLowerCase());
+                const label = formatLabel(name, "symptoms");
+                const visible = label.toLowerCase().includes(query.toLowerCase());
                 item.style.display = visible ? "flex" : "none";
             });
         }
@@ -743,7 +750,8 @@
         async function init() {
             try {
                 const symptoms = await fetchSymptoms();
-                renderSymptoms(symptoms);
+                allSymptoms = symptoms;
+                renderSymptoms(allSymptoms);
                 updateSelectedCount();
             } catch (error) {
                 results.appendChild(renderError(t("loadFailed")));
