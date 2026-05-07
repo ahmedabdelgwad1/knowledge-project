@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expert Disease Diagnosis System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --color-primary: #0b1f3a;
+            --color-accent: #1a7fbd;
+            --color-success: #16a34a;
+            --color-warning: #ea580c;
+            --color-danger: #dc2626;
+            --color-bg: #f0f4f8;
+            --color-card: #ffffff;
+            --color-ink: #0f172a;
+            --color-muted: #64748b;
+            --shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: radial-gradient(circle at top left, #e2e8f0, #f8fafc 40%, #e2e8f0);
+            color: var(--color-ink);
+            min-height: 100vh;
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--color-primary);
+            color: #ffffff;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #cbd5f5;
+            margin: 0;
+        }
+
+        .search-box {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .count-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            align-self: flex-start;
+        }
+
+        .symptom-list {
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 4px;
+        }
+
+        .symptom-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            color: #ffffff;
+            box-shadow: 0 8px 18px rgba(26, 127, 189, 0.35);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: var(--color-ink);
+        }
+
+        .lang-toggle {
+            align-self: flex-start;
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .header h1 {
+            margin: 0 0 6px;
+            font-size: 28px;
+            color: var(--color-primary);
+        }
+
+        .header p {
+            margin: 0;
+            color: var(--color-muted);
+        }
+
+        .results {
+            margin-top: 24px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--color-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            border-left: 6px solid transparent;
+        }
+
+        .card.success {
+            border-color: var(--color-success);
+        }
+
+        .card.warning {
+            border-color: var(--color-warning);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge.success {
+            background: rgba(22, 163, 74, 0.15);
+            color: var(--color-success);
+        }
+
+        .badge.warning {
+            background: rgba(234, 88, 12, 0.15);
+            color: var(--color-warning);
+        }
+
+        .badge.mild {
+            background: rgba(22, 163, 74, 0.15);
+            color: var(--color-success);
+        }
+
+        .badge.moderate {
+            background: rgba(234, 88, 12, 0.15);
+            color: var(--color-warning);
+        }
+
+        .badge.severe {
+            background: rgba(220, 38, 38, 0.15);
+            color: var(--color-danger);
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .chip {
+            padding: 4px 10px;
+            background: #e2e8f0;
+            border-radius: 999px;
+            font-size: 12px;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 999px;
+            background: #e2e8f0;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress span {
+            display: block;
+            height: 100%;
+            background: var(--color-accent);
+        }
+
+        .error {
+            background: rgba(220, 38, 38, 0.12);
+            color: var(--color-danger);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            padding: 12px 14px;
+            border-radius: var(--radius);
+        }
+
+        .rtl .sidebar {
+            text-align: right;
+        }
+
+        .rtl .symptom-item {
+            flex-direction: row-reverse;
+            justify-content: space-between;
+        }
+
+        .rtl .chips {
+            flex-direction: row-reverse;
+        }
+
+        @media (max-width: 900px) {
+            .app {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: sticky;
+                top: 0;
+            }
+
+            .content {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div>
+                <h2 id="appTitle" class="title">Expert Diagnosis</h2>
+                <p id="appSubtitle" class="subtitle">Select symptoms to analyze</p>
+            </div>
+            <button id="langToggle" class="btn btn-secondary lang-toggle" type="button">AR</button>
+            <input id="searchBox" class="search-box" type="text" placeholder="Search symptoms" />
+            <div id="selectedCount" class="count-badge">0 selected</div>
+            <div id="symptomList" class="symptom-list"></div>
+            <button id="diagnoseBtn" class="btn btn-primary">Diagnose</button>
+            <button id="resetBtn" class="btn btn-secondary">Reset</button>
+        </aside>
+
+        <main class="content">
+            <div class="header">
+                <h1 id="pageTitle">Expert Disease Diagnosis System</h1>
+                <p id="pageSubtitle">Select symptoms from the sidebar to see the diagnosis.</p>
+            </div>
+            <section id="results" class="results"></section>
+        </main>
+    </div>
+
+    <script>
+        const symptomList = document.getElementById("symptomList");
+        const results = document.getElementById("results");
+        const selectedCount = document.getElementById("selectedCount");
+        const searchBox = document.getElementById("searchBox");
+        const diagnoseBtn = document.getElementById("diagnoseBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const langToggle = document.getElementById("langToggle");
+        const appTitle = document.getElementById("appTitle");
+        const appSubtitle = document.getElementById("appSubtitle");
+        const pageTitle = document.getElementById("pageTitle");
+        const pageSubtitle = document.getElementById("pageSubtitle");
+
+        const translations = {
+            en: {
+                appTitle: "Expert Diagnosis",
+                appSubtitle: "Select symptoms to analyze",
+                pageTitle: "Expert Disease Diagnosis System",
+                pageSubtitle: "Select symptoms from the sidebar to see the diagnosis.",
+                searchPlaceholder: "Search symptoms",
+                diagnose: "Diagnose",
+                reset: "Reset",
+                selected: "selected",
+                fullMatch: "Full Match",
+                partialMatch: "Partial Match",
+                matched: "Matched",
+                symptoms: "symptoms",
+                mild: "mild",
+                moderate: "moderate",
+                severe: "severe",
+                noMatches: "No matches found.",
+                selectAtLeastOne: "Select at least one symptom.",
+                diagnoseFailed: "Unable to complete diagnosis.",
+                loadFailed: "Failed to load symptoms.",
+            },
+            ar: {
+                appTitle: "تشخيص خبير",
+                appSubtitle: "اختر الاعراض للتحليل",
+                pageTitle: "نظام تشخيص الامراض الخبير",
+                pageSubtitle: "اختر الاعراض من الشريط الجانبي لعرض التشخيص.",
+                searchPlaceholder: "ابحث عن الاعراض",
+                diagnose: "شخص",
+                reset: "اعادة ضبط",
+                selected: "تم اختيار",
+                fullMatch: "تطابق كامل",
+                partialMatch: "تطابق جزئي",
+                matched: "تمت مطابقة",
+                symptoms: "اعراض",
+                mild: "خفيف",
+                moderate: "متوسط",
+                severe: "شديد",
+                noMatches: "لا توجد نتائج.",
+                selectAtLeastOne: "اختر عرضا واحدا على الاقل.",
+                diagnoseFailed: "تعذر اكمال التشخيص.",
+                loadFailed: "تعذر تحميل الاعراض.",
+            },
+        };
+
+        let currentLang = "en";
+        let lastResults = null;
+
+        /**
+         * Get translation string for a key.
+         * @param {string} key
+         * @returns {string}
+         */
+        function t(key) {
+            return translations[currentLang][key] || key;
+        }
+
+        /**
+         * Get localized selected count text.
+         * @param {number} count
+         * @returns {string}
+         */
+        function selectedText(count) {
+            if (currentLang === "ar") {
+                return `${t("selected")} ${count}`;
+            }
+            return `${count} ${t("selected")}`;
+        }
+
+        /**
+         * Apply language strings to static UI.
+         * @returns {void}
+         */
+        function applyLanguage() {
+            appTitle.textContent = t("appTitle");
+            appSubtitle.textContent = t("appSubtitle");
+            pageTitle.textContent = t("pageTitle");
+            pageSubtitle.textContent = t("pageSubtitle");
+            searchBox.placeholder = t("searchPlaceholder");
+            diagnoseBtn.textContent = t("diagnose");
+            resetBtn.textContent = t("reset");
+            langToggle.textContent = currentLang === "en" ? "AR" : "EN";
+            updateSelectedCount();
+            document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+            document.body.classList.toggle("rtl", currentLang === "ar");
+            if (lastResults) {
+                renderResults(lastResults);
+            }
+        }
+
+        /**
+         * Fetch list of symptoms from API.
+         * @returns {Promise<string[]>}
+         */
+        async function fetchSymptoms() {
+            const response = await fetch("/api/symptoms");
+            if (!response.ok) {
+                throw new Error("Failed to load symptoms");
+            }
+            return response.json();
+        }
+
+        /**
+         * Fetch diagnosis results from API.
+         * @param {string[]} symptoms
+         * @returns {Promise<Object>}
+         */
+        async function fetchDiagnosis(symptoms) {
+            const response = await fetch("/api/diagnose", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ symptoms }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to diagnose");
+            }
+            return response.json();
+        }
+
+        /**
+         * Format symptom label.
+         * @param {string} value
+         * @returns {string}
+         */
+        function formatLabel(value) {
+            return value.replace(/_/g, " ");
+        }
+
+        /**
+         * Update selection counter.
+         * @returns {void}
+         */
+        function updateSelectedCount() {
+            const count = getSelectedSymptoms().length;
+            selectedCount.textContent = selectedText(count);
+        }
+
+        /**
+         * Render symptom checkboxes.
+         * @param {string[]} symptoms
+         * @returns {void}
+         */
+        function renderSymptoms(symptoms) {
+            symptomList.innerHTML = "";
+            const fragment = document.createDocumentFragment();
+            symptoms.forEach((symptom) => {
+                const wrapper = document.createElement("label");
+                wrapper.className = "symptom-item";
+                wrapper.dataset.symptom = symptom;
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.value = symptom;
+                checkbox.addEventListener("change", updateSelectedCount);
+
+                const text = document.createElement("span");
+                text.textContent = formatLabel(symptom);
+
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(text);
+                fragment.appendChild(wrapper);
+            });
+            symptomList.appendChild(fragment);
+        }
+
+        /**
+         * Render a progress bar for partial matches.
+         * @param {number} score
+         * @returns {HTMLElement}
+         */
+        function renderProgressBar(score) {
+            const bar = document.createElement("div");
+            bar.className = "progress";
+            const fill = document.createElement("span");
+            fill.style.width = `${Math.round(score * 100)}%`;
+            bar.appendChild(fill);
+            return bar;
+        }
+
+        /**
+         * Build header HTML for a full match card.
+         * @param {Object} match
+         * @returns {string}
+         */
+        function buildFullHeader(match) {
+            return `
+                <h3>${formatLabel(match.disease)}</h3>
+                <div class="badge success">${t("fullMatch")}</div>
+                <div class="badge ${match.severity}">${t(match.severity)}</div>
+                <p>${t("matched")} ${match.matchCount} ${t("symptoms")} / ${match.totalSymptoms}</p>
+            `;
+        }
+
+        /**
+         * Build header HTML for a partial match card.
+         * @param {Object} match
+         * @returns {string}
+         */
+        function buildPartialHeader(match) {
+            return `
+                <h3>${formatLabel(match.disease)}</h3>
+                <div class="badge warning">${t("partialMatch")}</div>
+                <p>${t("matched")} ${match.matchCount} ${t("symptoms")} / ${match.totalSymptoms}</p>
+            `;
+        }
+
+        /**
+         * Render chips for matched symptoms.
+         * @param {string[]} symptoms
+         * @returns {HTMLElement}
+         */
+        function renderChips(symptoms) {
+            const chips = document.createElement("div");
+            chips.className = "chips";
+            symptoms.forEach((symptom) => {
+                const chip = document.createElement("span");
+                chip.className = "chip";
+                chip.textContent = formatLabel(symptom);
+                chips.appendChild(chip);
+            });
+            return chips;
+        }
+
+        /**
+         * Render a full match card.
+         * @param {Object} match
+         * @returns {HTMLElement}
+         */
+        function renderFullMatch(match) {
+            const card = document.createElement("div");
+            card.className = "card success";
+            card.innerHTML = buildFullHeader(match);
+            card.appendChild(renderChips(match.matchedSymptoms));
+            card.appendChild(renderTreatments(match.treatments));
+            return card;
+        }
+
+        /**
+         * Render a partial match card.
+         * @param {Object} match
+         * @returns {HTMLElement}
+         */
+        function renderPartialMatch(match) {
+            const card = document.createElement("div");
+            card.className = "card warning";
+            card.innerHTML = buildPartialHeader(match);
+            card.appendChild(renderProgressBar(match.score));
+            card.appendChild(renderTreatments(match.treatments));
+            return card;
+        }
+
+        /**
+         * Render treatments list.
+         * @param {string[]} treatments
+         * @returns {HTMLElement}
+         */
+        function renderTreatments(treatments) {
+            const list = document.createElement("ul");
+            treatments.forEach((treatment) => {
+                const item = document.createElement("li");
+                item.textContent = formatLabel(treatment);
+                list.appendChild(item);
+            });
+            return list;
+        }
+
+        /**
+         * Render results into the UI.
+         * @param {Object} data
+         * @returns {void}
+         */
+        function renderResults(data) {
+            results.innerHTML = "";
+            lastResults = data;
+            const full = data.full_matches || [];
+            const partial = data.partial_matches || [];
+            full.forEach((match) => results.appendChild(renderFullMatch(match)));
+            if (full.length === 0 && partial.length === 0) {
+                results.appendChild(renderError(t("noMatches")));
+            }
+            partial.forEach((match) => results.appendChild(renderPartialMatch(match)));
+        }
+
+        /**
+         * Render an error banner.
+         * @param {string} message
+         * @returns {HTMLElement}
+         */
+        function renderError(message) {
+            const banner = document.createElement("div");
+            banner.className = "error";
+            banner.textContent = message;
+            return banner;
+        }
+
+        /**
+         * Get selected symptom values.
+         * @returns {string[]}
+         */
+        function getSelectedSymptoms() {
+            return Array.from(symptomList.querySelectorAll("input:checked")).map(
+                (checkbox) => checkbox.value
+            );
+        }
+
+        /**
+         * Filter symptoms by query.
+         * @param {string} query
+         * @returns {void}
+         */
+        function filterSymptoms(query) {
+            const items = symptomList.querySelectorAll(".symptom-item");
+            items.forEach((item) => {
+                const name = item.dataset.symptom || "";
+                const visible = name.includes(query.toLowerCase());
+                item.style.display = visible ? "flex" : "none";
+            });
+        }
+
+        /**
+         * Handle search input changes.
+         * @param {Event} event
+         * @returns {void}
+         */
+        function handleSearch(event) {
+            filterSymptoms(event.target.value);
+        }
+
+        /**
+         * Reset selections and results.
+         * @returns {void}
+         */
+        function resetAll() {
+            symptomList.querySelectorAll("input").forEach((input) => {
+                input.checked = false;
+            });
+            searchBox.value = "";
+            results.innerHTML = "";
+            updateSelectedCount();
+            filterSymptoms("");
+        }
+
+        /**
+         * Handle diagnose action.
+         * @returns {Promise<void>}
+         */
+        async function handleDiagnose() {
+            const selected = getSelectedSymptoms();
+            if (selected.length === 0) {
+                results.innerHTML = "";
+                results.appendChild(renderError(t("selectAtLeastOne")));
+                return;
+            }
+            try {
+                const data = await fetchDiagnosis(selected);
+                renderResults(data);
+            } catch (error) {
+                results.innerHTML = "";
+                results.appendChild(renderError(t("diagnoseFailed")));
+            }
+        }
+
+        /**
+         * Initialize the application.
+         * @returns {Promise<void>}
+         */
+        async function init() {
+            try {
+                const symptoms = await fetchSymptoms();
+                renderSymptoms(symptoms);
+                updateSelectedCount();
+            } catch (error) {
+                results.appendChild(renderError(t("loadFailed")));
+            }
+        }
+
+        /**
+         * Toggle application language.
+         * @returns {void}
+         */
+        function toggleLanguage() {
+            currentLang = currentLang === "en" ? "ar" : "en";
+            applyLanguage();
+        }
+
+        diagnoseBtn.addEventListener("click", handleDiagnose);
+        resetBtn.addEventListener("click", resetAll);
+        searchBox.addEventListener("input", handleSearch);
+        langToggle.addEventListener("click", toggleLanguage);
+
+        applyLanguage();
+        init();
+    </script>
+</body>
+
+</html>
