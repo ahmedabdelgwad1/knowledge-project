@@ -15,9 +15,12 @@ pinned: false
 **Instructors:** Dr. Nihal Mabrouk / Eng. Renad Khalil  
 **Semester:** Spring 2025-2026  
 
-## 🌐 Live Demo
+## 🌐 Live Demo & Source Code
 **Try the deployed project here:** 
 👉 **[Disease Diagnosis System (Live on Hugging Face)](https://ahmed3182004-disease-diagnosis-prolog.hf.space)** 👈
+
+**View the Source Code on GitHub:**
+💻 **[GitHub Repository](https://github.com/ahmedabdelgwad1/knowledge-project)** 💻
 
 ## Project Overview
 This project is an Expert System capable of diagnosing common diseases based on user-input symptoms. It uses Prolog for knowledge representation and rule-based reasoning, integrated with a Python (Flask) backend to provide a seamless web interface (HTML/CSS/JS) for the users.
