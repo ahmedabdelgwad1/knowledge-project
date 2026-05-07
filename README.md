@@ -60,6 +60,4 @@ This project is an Expert System capable of diagnosing common diseases based on 
    ```
    Open `http://127.0.0.1:5001` in your browser.
 
-## Team
-- Student 1: Ahmed Abdelgwad
-- Student 2: [Add Partner Name Here if any]
+
