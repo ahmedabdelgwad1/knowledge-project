@@ -640,7 +640,9 @@
             const list = document.createElement("ul");
             treatments.forEach((treatment) => {
                 const item = document.createElement("li");
-                item.textContent = formatLabel(treatment, "treatments");
+                const label = formatLabel(treatment, "treatments");
+                item.textContent =
+                    currentLang === "ar" ? `العلاج: ${label}` : label;
                 list.appendChild(item);
             });
             return list;
